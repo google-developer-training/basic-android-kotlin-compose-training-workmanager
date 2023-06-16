@@ -29,4 +29,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Blur-O-Matic"
-include ':app'
+include(":app")
