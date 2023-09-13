@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
@@ -93,6 +94,7 @@ fun BluromaticScreenContent(
             painter = painterResource(R.drawable.android_cupcake),
             contentDescription = stringResource(R.string.description_image),
             modifier = Modifier
+                .statusBarsPadding()
                 .fillMaxWidth()
                 .height(400.dp),
             contentScale = ContentScale.Fit,
