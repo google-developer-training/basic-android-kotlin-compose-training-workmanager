@@ -37,12 +37,14 @@ private val DarkColorScheme = darkColorScheme(
     primary = md_theme_dark_primary,
     secondaryContainer = md_theme_dark_secondaryContainer,
     background = md_theme_dark_background,
+    surface = md_theme_dark_surface,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
     secondaryContainer = md_theme_light_secondaryContainer,
     background = md_theme_light_background,
+    surface = md_theme_light_surface,
 )
 
 @Composable
