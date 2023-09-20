@@ -79,7 +79,7 @@ fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurView
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(MaterialTheme.colorScheme.background)
                     .statusBarsPadding()
                     .padding(
                         start = WindowInsets.safeDrawing.asPaddingValues()
