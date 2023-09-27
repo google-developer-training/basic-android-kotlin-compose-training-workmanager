@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -79,8 +78,6 @@ fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurView
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .statusBarsPadding()
                     .padding(
                         start = WindowInsets.safeDrawing.asPaddingValues()
                             .calculateStartPadding(layoutDirection),
@@ -95,6 +92,7 @@ fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurView
                     cancelWork = blurViewModel::cancelWork,
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
+                        .statusBarsPadding()
                         .padding(
                             start = dimensionResource(R.dimen.padding_small),
                             top = dimensionResource(R.dimen.padding_small),
