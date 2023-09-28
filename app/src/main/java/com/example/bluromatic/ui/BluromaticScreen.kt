@@ -74,33 +74,31 @@ import com.example.bluromatic.ui.theme.BluromaticTheme
 fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurViewModel.Factory)) {
     val uiState by blurViewModel.blurUiState.collectAsStateWithLifecycle()
     val layoutDirection = LocalLayoutDirection.current
-    BluromaticTheme {
-            Surface(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = WindowInsets.safeDrawing.asPaddingValues()
-                            .calculateStartPadding(layoutDirection),
-                        end = WindowInsets.safeDrawing.asPaddingValues()
-                            .calculateEndPadding(layoutDirection)
-                    )
-            ) {
-                BluromaticScreenContent(
-                    blurUiState = uiState,
-                    blurAmountOptions = blurViewModel.blurAmount,
-                    applyBlur = blurViewModel::applyBlur,
-                    cancelWork = blurViewModel::cancelWork,
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                        .statusBarsPadding()
-                        .padding(
-                            start = dimensionResource(R.dimen.padding_small),
-                            top = dimensionResource(R.dimen.padding_small),
-                            end = dimensionResource(R.dimen.padding_small),
-                        )
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(
+                start = WindowInsets.safeDrawing.asPaddingValues()
+                    .calculateStartPadding(layoutDirection),
+                end = WindowInsets.safeDrawing.asPaddingValues()
+                    .calculateEndPadding(layoutDirection)
+            )
+    ) {
+        BluromaticScreenContent(
+            blurUiState = uiState,
+            blurAmountOptions = blurViewModel.blurAmount,
+            applyBlur = blurViewModel::applyBlur,
+            cancelWork = blurViewModel::cancelWork,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(
+                    start = dimensionResource(R.dimen.padding_small),
+                    top = dimensionResource(R.dimen.padding_small),
+                    end = dimensionResource(R.dimen.padding_small),
                 )
-            }
-        }
+        )
+    }
 }
 
 @Composable
