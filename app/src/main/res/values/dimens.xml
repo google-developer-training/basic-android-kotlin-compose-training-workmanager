@@ -17,4 +17,5 @@
 
 <resources>
     <dimen name="padding_small">8.dp</dimen>
+    <dimen name="padding_medium">16.dp</dimen>
 </resources>
