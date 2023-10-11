@@ -92,11 +92,7 @@ fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurView
             cancelWork = blurViewModel::cancelWork,
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(
-                    start = dimensionResource(R.dimen.padding_small),
-                    top = dimensionResource(R.dimen.padding_small),
-                    end = dimensionResource(R.dimen.padding_small),
-                )
+                .padding(dimensionResource(R.dimen.padding_medium))
         )
     }
 }
@@ -215,6 +211,16 @@ private fun BlurAmountContent(
     }
 }
 
+private fun showBlurredImage(context: Context, currentUri: String) {
+    val uri = if (currentUri.isNotEmpty()) {
+        Uri.parse(currentUri)
+    } else {
+        null
+    }
+    val actionView = Intent(Intent.ACTION_VIEW, uri)
+    context.startActivity(actionView)
+}
+
 @Preview(showBackground = true)
 @Composable
 fun BluromaticScreenContentPreview() {
@@ -224,23 +230,7 @@ fun BluromaticScreenContentPreview() {
             blurAmountOptions = listOf(BlurAmount(R.string.blur_lv_1, 1)),
             {},
             {},
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(
-                    start = 8.dp,
-                    top = 8.dp,
-                    end = 8.dp,
-                )
+            modifier = Modifier.padding(16.dp)
         )
     }
-}
-
-private fun showBlurredImage(context: Context, currentUri: String) {
-    val uri = if (currentUri.isNotEmpty()) {
-        Uri.parse(currentUri)
-    } else {
-        null
-    }
-    val actionView = Intent(Intent.ACTION_VIEW, uri)
-    context.startActivity(actionView)
 }
