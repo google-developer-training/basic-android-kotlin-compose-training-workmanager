@@ -24,14 +24,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
@@ -49,6 +57,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -64,18 +73,27 @@ import com.example.bluromatic.ui.theme.BluromaticTheme
 @Composable
 fun BluromaticScreen(blurViewModel: BlurViewModel = viewModel(factory = BlurViewModel.Factory)) {
     val uiState by blurViewModel.blurUiState.collectAsStateWithLifecycle()
-    BluromaticTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            BluromaticScreenContent(
-                blurUiState = uiState,
-                blurAmountOptions = blurViewModel.blurAmount,
-                applyBlur = blurViewModel::applyBlur,
-                cancelWork = blurViewModel::cancelWork
+    val layoutDirection = LocalLayoutDirection.current
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .padding(
+                start = WindowInsets.safeDrawing.asPaddingValues()
+                    .calculateStartPadding(layoutDirection),
+                end = WindowInsets.safeDrawing.asPaddingValues()
+                    .calculateEndPadding(layoutDirection)
             )
-        }
+    ) {
+        BluromaticScreenContent(
+            blurUiState = uiState,
+            blurAmountOptions = blurViewModel.blurAmount,
+            applyBlur = blurViewModel::applyBlur,
+            cancelWork = blurViewModel::cancelWork,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(dimensionResource(R.dimen.padding_medium))
+        )
     }
 }
 
@@ -84,11 +102,12 @@ fun BluromaticScreenContent(
     blurUiState: BlurUiState,
     blurAmountOptions: List<BlurAmount>,
     applyBlur: (Int) -> Unit,
-    cancelWork: () -> Unit
+    cancelWork: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var selectedValue by rememberSaveable { mutableStateOf(1) }
     val context = LocalContext.current
-    Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))) {
+    Column(modifier = modifier) {
         Image(
             painter = painterResource(R.drawable.android_cupcake),
             contentDescription = stringResource(R.string.description_image),
@@ -129,7 +148,12 @@ private fun BlurActions(
     ) {
         when (blurUiState) {
             is BlurUiState.Default -> {
-                Button(onStartClick) { Text(stringResource(R.string.start)) }
+                Button(
+                    onClick = onStartClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.start))
+                }
             }
 
             is BlurUiState.Loading -> {
@@ -187,19 +211,6 @@ private fun BlurAmountContent(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BluromaticScreenContentPreview() {
-    BluromaticTheme {
-        BluromaticScreenContent(
-            blurUiState = BlurUiState.Default,
-            blurAmountOptions = listOf(BlurAmount(R.string.blur_lv_1, 1)),
-            {},
-            {}
-        )
-    }
-}
-
 private fun showBlurredImage(context: Context, currentUri: String) {
     val uri = if (currentUri.isNotEmpty()) {
         Uri.parse(currentUri)
@@ -208,4 +219,18 @@ private fun showBlurredImage(context: Context, currentUri: String) {
     }
     val actionView = Intent(Intent.ACTION_VIEW, uri)
     context.startActivity(actionView)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BluromaticScreenContentPreview() {
+    BluromaticTheme {
+        BluromaticScreenContent(
+            blurUiState = BlurUiState.Default,
+            blurAmountOptions = listOf(BlurAmount(R.string.blur_lv_1, 1)),
+            {},
+            {},
+            modifier = Modifier.padding(16.dp)
+        )
+    }
 }
