@@ -19,6 +19,7 @@ package com.example.bluromatic.workers
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import androidx.work.CoroutineWorker
@@ -27,6 +28,8 @@ import androidx.work.workDataOf
 import com.example.bluromatic.DELAY_TIME_MILLIS
 import com.example.bluromatic.KEY_IMAGE_URI
 import com.example.bluromatic.R
+import com.example.bluromatic.domain.CreateImageUriUseCase
+import com.example.bluromatic.domain.SaveImageUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -64,9 +67,25 @@ class SaveImageToFileWorker(ctx: Context, params: WorkerParameters) : CoroutineW
                 val bitmap = BitmapFactory.decodeStream(
                     resolver.openInputStream(Uri.parse(resourceUri))
                 )
-                val imageUrl = MediaStore.Images.Media.insertImage(
-                    resolver, bitmap, title, dateFormatter.format(Date())
-                )
+
+                val imageUrl: String?
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    val createImageUriUseCase = CreateImageUriUseCase()
+                    val saveImageUseCase = SaveImageUseCase()
+
+                    val imageUri = createImageUriUseCase(
+                        resolver,
+                        "${title}_${dateFormatter.format(Date())}.jpg"
+                    )
+
+                    saveImageUseCase(resolver, imageUri, bitmap)
+                    imageUrl = imageUri.toString()
+                } else {
+                    @Suppress("DEPRECATION")
+                    imageUrl = MediaStore.Images.Media.insertImage(
+                        resolver, bitmap, title, dateFormatter.format(Date())
+                    )
+                }
                 if (!imageUrl.isNullOrEmpty()) {
                     val output = workDataOf(KEY_IMAGE_URI to imageUrl)
 
