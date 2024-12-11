@@ -6,7 +6,8 @@
 
   "baseBranches": [
     "main",
-    "starter"
+    "starter",
+    "intermediate"
   ]
 
 }
